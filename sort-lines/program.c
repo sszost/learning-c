@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   char **p = lineptr;
   while (--nlines > 0)
     printf("%s", *p++);
-    
+
   // writelines(lineptr, nlines);
 
   return 0;

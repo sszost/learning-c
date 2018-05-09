@@ -53,3 +53,17 @@ int lower(int c)
 {
   return (c >= 'A' && c <= 'Z') ? c + 'a' - 'A' : c;
 }
+
+// return lefmost index of t in s, -1 otherwise 
+int idx(char *s, char *t)
+{
+  char *p;
+  for (p = s; *p; p++)
+  {
+    for (; *p == *t; t++)
+      ;
+    if (*t == '\0')
+      return p - s;
+  }
+  return -1;
+}
