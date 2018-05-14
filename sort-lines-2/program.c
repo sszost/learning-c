@@ -1,3 +1,6 @@
+// sorting lines but using function pointers for comparison
+// two functions to compare strings numerically or lexographically
+// core sort algorithm can be reused 
 #include <stdio.h>
 #include "../common/common.h"
 #include "../alloc/alloc.h"
