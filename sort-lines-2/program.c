@@ -7,7 +7,7 @@
 #define LINES 100
 #define MAXLINE 1000
 
-void sort(char *[], int, int (*)(char *, char *), void (*)(char *[], char *[]));
+void sort(char *[], int, int, int (*)(char *, char *), void (*)(char *[], char *[]));
 int numcomp(char *, char *);
 int lexcomp(char *, char *);
 char *strsave(char *);
@@ -16,17 +16,43 @@ void swap(char *[], char *[]);
 int main(int argc, char *argv[])
 {
   FILE *file;
-  char *lineptr[LINES], line[MAXLINE];
+  char *lineptr[LINES], line[MAXLINE], *s;
   int nlines;
+  int reverse = 0, number = 0;
 
-  file = fopen("../numbers.txt", "r");
+  while (--argc > 0 && (*++argv)[0] == '-')
+    for (s = argv[0] + 1; *s; s++)
+      switch (*s)
+      {
+      case 'r':
+        reverse = 1;
+        break;
+      case 'n':
+        number = 1;
+        break;
+      default:
+        printf("find: illegal option %c\n", *s);
+        argc = 0;
+        break;
+      }
+
+  if (argc != 1)
+  {
+    printf("Usage: sort -n -r file\n");
+    return 0;
+  }
+  else
+    file = fopen(*argv, "r");
+
   nlines = 0;
 
   while (getlinefile(file, line, MAXLINE) > 0)
     lineptr[nlines++] = strsave(line);
 
-  sort(lineptr, nlines, numcomp, swap);
-  // sort(lineptr, nlines, lexcomp, swap);
+  if (number)
+    sort(lineptr, nlines, reverse, numcomp, swap);
+  else
+    sort(lineptr, nlines, reverse, lexcomp, swap);
 
   char **p = lineptr;
   while (--nlines >= 0)
@@ -36,15 +62,16 @@ int main(int argc, char *argv[])
 }
 
 // shell sort
-void sort(char *v[], int n, int (*comp)(char *, char *), void (*exch)(char *[], char *[]))
+void sort(char *v[], int nl, int r, int (*comp)(char *, char *), void (*exch)(char *[], char *[]))
 {
-  int gap, i, j;
+  int gap, i, j, c;
 
-  for (gap = n / 2; gap > 0; gap /= 2)
-    for (i = gap; i < n; ++i)
+  for (gap = nl / 2; gap > 0; gap /= 2)
+    for (i = gap; i < nl; ++i)
       for (j = i - gap; j >= 0; j -= gap)
       {
-        if ((*comp)(v[j], v[j + gap]) <= 0)
+        c = (*comp)(v[j], v[j + gap]);
+        if (r ? c >= 0 : c <= 0)
           break;
         (*exch)(&v[j], &v[j + gap]);
       }
