@@ -4,6 +4,9 @@
 
 // symbols
 #define MAXWORD 20 // maximum length of word
+#define BUFSIZE 100
+#define LETTER 'a'
+#define DIGIT '0'
 
 struct key
 {
@@ -12,15 +15,16 @@ struct key
 };
 
 // function declarations
-int letter(int);
+int type(int);
 int getwordfile(FILE *, char[], int);
 int getch(FILE *);
 void ungetch(int);
 int binary(char *, struct key[], int);
 void sort(struct key[], int);
 
-// external variables for bufferd input
-int buf, isbuf;
+// externals
+static char buf[BUFSIZE]; // buffer for our input
+static int bufp = 0;      // pointer to our buffer, next free position
 
 int main(int argc, char *argv[])
 {
@@ -95,36 +99,33 @@ int getwordfile(FILE *file, char *s, int lim)
   int c;
 
   // skip white space and special characters
-  while ((c = getch(file)) != EOF && !letter(c))
+  while ((c = getch(file)) != EOF && type(c) != LETTER)
     ;
   ungetch(c); // we read too much
-  while (--lim > 0 && (c = getch(file)) != EOF && letter(c))
+  while (--lim > 0 && (c = getch(file)) != EOF && type(c) == LETTER)
     *s++ = c;
   *s = '\0';
   return (c == EOF) ? 0 : 1;
 }
 
 // return 1 if c is a letter, 0 otherwise
-int letter(int c)
+int type(int c)
 {
-  return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') ? 1 : 0;
+  if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') return LETTER;
+  else if ( c >= '0' && c <= '9') return DIGIT;
+  else return c;
 }
 
-// get character from buffer or file stream
+// get (a possibly pushed back) character
 int getch(FILE *file)
 {
-  if (isbuf)
-  {
-    isbuf = 0;
-    return buf;
-  }
-  else
-    return getc(file);
+  return (bufp > 0) ? buf[--bufp] : getc(file);
 }
 
-// save character to buffer
 void ungetch(int c)
 {
-  isbuf = 1;
-  buf = c;
+  if (bufp > BUFSIZE)
+    printf("ungetch: too many characters\n");
+  else
+    buf[bufp++] = c;
 }
