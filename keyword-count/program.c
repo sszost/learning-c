@@ -7,6 +7,7 @@
 #define BUFSIZE 100
 #define LETTER 'a'
 #define DIGIT '0'
+#define NKEYS (sizeof(keys_arr) / sizeof(struct key))
 
 struct key
 {
@@ -43,15 +44,14 @@ int main(int argc, char *argv[])
       {"sed", 0},
       {"qui", 0}};
 
-  keys_arr_size = sizeof(keys_arr) / sizeof(struct key);
-  sort(keys_arr, keys_arr_size);
+  sort(keys_arr, NKEYS);
 
   file = fopen("../text.txt", "r");
   while (getwordfile(file, word, MAXWORD))
-    if ((n = binary(word, keys_arr, keys_arr_size)) >= 0)
+    if ((n = binary(word, keys_arr, NKEYS)) >= 0)
       keys_arr[n].count++;
 
-  for (int i = 0; i < keys_arr_size; i++)
+  for (int i = 0; i < NKEYS; i++)
     printf("%s %d\n", keys_arr[i].word, keys_arr[i].count);
 
   return 0;
