@@ -34,6 +34,21 @@ int strl(char *s)
   return p - s;
 }
 
+char *strlower(char *s)
+{
+  char *c;
+
+  c = s;
+  while (*c)
+  {
+    if (*c >= 'A' && *c <= 'Z')
+      *c = *c + 'a' - 'A';
+    c++;
+  }
+  return s;
+}
+
+
 // reverse string in place
 void reverse(char *s, int len)
 {
