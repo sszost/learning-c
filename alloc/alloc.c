@@ -29,6 +29,21 @@ void free(char *p)
     allocp = p;
 }
 
+char *strsave(char *s)
+{
+  char *p, *t, *c;
+
+  t = s;
+  while (*t)
+    t++;
+
+  p = alloc((t - s) + 1);
+  if ((c = p) > 0)
+    while (*c++ = *s++)
+      ;
+  return p;
+}
+
 // print first n characters of allocbuf
 void printalloc(int n)
 {
