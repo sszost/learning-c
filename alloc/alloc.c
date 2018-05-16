@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#define ALLOCSIZE 9000 // size of available space
+#define ALLOCSIZE 99000 // size of available space
 #define NUL 0          // null pointer
 
 // private external variables
