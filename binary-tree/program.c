@@ -15,30 +15,66 @@ struct tnode
 
 int getword(FILE *file, char *s, int lim); // from ../common/getword.c
 struct tnode *tree(struct tnode *, char *);
+void nodeprint(char *, struct tnode *);
 void treeprint(struct tnode *);
 struct tnode *talloc();
+
+//sort by count
+struct tnode *insertcount(struct tnode *p, struct tnode *c);
+struct tnode *sortcount(struct tnode *s, struct tnode *d);
 
 int main(int argc, char *argv[])
 {
   char word[MAXWORD];
   FILE *file;
-  struct tnode *n;
+  struct tnode *root, *sorted;
+  int iseof;
 
-  n = NULL;
+  root = sorted = NULL;
   file = fopen("../text.txt", "r");
 
-  while (getword(file, word, MAXWORD))
-    n = tree(n, strlower(word));
+  while (1)
+  {
+    iseof = getword(file, word, MAXWORD);
+    root = tree(root, strlower(word));
+    if (iseof)
+      break;
+  }
 
-  treeprint(n);
+  sorted = sortcount(root, sorted);
+  treeprint(sorted);
 
   return 0;
+}
+
+struct tnode *insertcount(struct tnode *p, struct tnode *c)
+{
+  if (p == NULL)
+    p = c;
+  else if (p->count < c->count)
+    p->left = insertcount(p->left, c);
+  else
+    p->right = insertcount(p->right, c);
+  return p;
+}
+
+struct tnode *sortcount(struct tnode *s, struct tnode *d)
+{
+  if (s != NULL)
+  {
+    d = sortcount(s->left, d);
+    d = sortcount(s->right, d);
+    d = insertcount(d, s);
+    // remove references to avoid loops in tree
+    s->left = NULL;
+    s->right = NULL;
+  }
+  return d;
 }
 
 struct tnode *tree(struct tnode *p, char *w)
 {
   int cond;
-
   if (p == NULL)
   {
     p = talloc();
@@ -52,7 +88,6 @@ struct tnode *tree(struct tnode *p, char *w)
     p->left = tree(p->left, w);
   else
     p->right = tree(p->right, w);
-
   return p;
 }
 
@@ -64,6 +99,14 @@ void treeprint(struct tnode *t)
     printf("%4d %s\n", t->count, t->word);
     treeprint(t->right);
   }
+}
+
+void nodeprint(char *m, struct tnode *n)
+{
+  if (n != NULL)
+    printf("%s  %c <- %s -> %c\n", m, (n->left) ? '*' : 'N', n->word, (n->right) ? '*' : 'N');
+  else
+    printf("%s  node is NULL\n", m);
 }
 
 struct tnode *talloc()
