@@ -16,7 +16,7 @@ static char buf[BUFSIZE]; // buffer for our input
 static int bufp = 0;      // pointer to our buffer, next free position
 
 
-// get word from file into s, return 0 if reached end, 1 otherwise
+// get word from file into s, return 1 if EOF
 int getword(FILE *file, char *s, int lim)
 {
   int c;
@@ -28,7 +28,7 @@ int getword(FILE *file, char *s, int lim)
   while (--lim > 0 && (c = getch(file)) != EOF && type(c) == LETTER)
     *s++ = c;
   *s = '\0';
-  return (c == EOF) ? 0 : 1;
+  return (c == EOF) ? 1 : 0;
 }
 
 // return 1 if c is a letter, 0 otherwise
