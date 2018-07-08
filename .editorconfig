@@ -1,0 +1,3 @@
+[*.c]
+tab_width = 8
+indent_style = tab
