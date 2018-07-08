@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
+// insert node c into node p, count wise
 struct tnode *insertcount(struct tnode *p, struct tnode *c)
 {
   if (p == NULL)
@@ -58,6 +59,7 @@ struct tnode *insertcount(struct tnode *p, struct tnode *c)
   return p;
 }
 
+// in place sorting by count
 struct tnode *sortcount(struct tnode *s, struct tnode *d)
 {
   if (s != NULL)
